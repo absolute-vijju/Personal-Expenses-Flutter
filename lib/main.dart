@@ -59,9 +59,14 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   List<Transaction> get _recentTransactions {
-    return _userTransactions.where((element) {
-      return element.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
-    }).toList();
+    return _userTransactions
+        .where((element) {
+          return element.date
+              .isAfter(DateTime.now().subtract(Duration(days: 7)));
+        })
+        .toList()
+        .reversed
+        .toList();
   }
 
   void _addNewTransaction(String mTitle, double mAmount) {
