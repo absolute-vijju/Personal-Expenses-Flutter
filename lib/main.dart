@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
             .copyWith(secondary: Colors.amber),
         textTheme: const TextTheme(
-          headline6: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
+            headline6: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            button: TextStyle(color: Colors.white)),
         appBarTheme: AppBarTheme(
           titleTextStyle: ThemeData.light()
               .textTheme
@@ -59,14 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   List<Transaction> get _recentTransactions {
-    return _userTransactions
-        .where((element) {
-          return element.date
-              .isAfter(DateTime.now().subtract(Duration(days: 7)));
-        })
-        .toList()
-        .reversed
-        .toList();
+    return _userTransactions.where((element) {
+      return element.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
   }
 
   void _addNewTransaction(String mTitle, double mAmount) {
