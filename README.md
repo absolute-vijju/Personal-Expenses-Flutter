@@ -1,4 +1,4 @@
-# expense_planner
+# Personal Expenses
 
 A new Flutter project.
 
