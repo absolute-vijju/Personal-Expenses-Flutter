@@ -13,20 +13,17 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime? _pickedDate = null;
+  DateTime? _pickedDate;
 
   void _submitTransaction() {
     String title = _titleController.text;
     double amount = double.parse(_amountController.text);
 
-    if (title.isEmpty || amount <= 0) {
+    if (title.isEmpty || amount <= 0 || _pickedDate == null) {
       return;
     }
 
-    widget.addNewTransaction(
-      title,
-      amount,
-    );
+    widget.addNewTransaction(title, amount, _pickedDate);
 
     Navigator.of(context).pop();
   }
