@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../widgets/chart.dart';
 import '../widgets/new_transactions.dart';
 import '../widgets/transaction_list.dart';
@@ -5,6 +7,12 @@ import '../models/transaction.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  // Uncomment this code if you want force your app in PORTRAIT mode only.
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(MyApp());
 }
 
@@ -15,6 +23,7 @@ class MyApp extends StatelessWidget {
       title: "Personal Expenses",
       theme: ThemeData(
         fontFamily: "Quicksand",
+        errorColor: Colors.red,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
             .copyWith(secondary: Colors.amber),
         textTheme: const TextTheme(
@@ -60,7 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((element) {
-      return element.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+      return element.date
+          .isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
   }
 
@@ -77,6 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
+    });
+  }
+
   void startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -88,27 +104,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Personal Expenses",
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              startAddNewTransaction(context);
-            },
-            icon: const Icon(Icons.add),
-          )
-        ],
+    final appBar = AppBar(
+      title: const Text(
+        "Personal Expenses",
       ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            startAddNewTransaction(context);
+          },
+          icon: const Icon(Icons.add),
+        )
+      ],
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(_recentTransactions),
-            TransactionList(_userTransactions)
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.25,
+                child: Chart(_recentTransactions)),
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.75,
+                child: TransactionList(_userTransactions, _deleteTransaction))
           ],
         ),
       ),
@@ -116,7 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           startAddNewTransaction(context);
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+        ),
       ),
     );
   }
